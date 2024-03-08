@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopsmart_admin_ar/models/dashboard_button_model.dart';
+import 'package:shopsmart_admin_ar/widgets/dashboard_button.dart';
 import 'package:shopsmart_admin_ar/widgets/title_text.dart';
 
 import '../providers/theme_provider.dart';
@@ -17,7 +19,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const TitlesTextWidget(label: "Dashboard Screen"),
@@ -37,8 +38,19 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      body: const Center(
-        child: TitlesTextWidget(label: "Dashboard Screen"),
+      body: GridView.count(
+        crossAxisCount: 2,
+        children: List.generate(
+          DashboardButtonModel.dashboardButtonsList(context).length,
+          (index) => DashboardButtonWidget(
+            text:
+                DashboardButtonModel.dashboardButtonsList(context)[index].text,
+            image:
+                DashboardButtonModel.dashboardButtonsList(context)[index].image,
+            onTap:
+                DashboardButtonModel.dashboardButtonsList(context)[index].onTap,
+          ),
+        ),
       ),
     );
   }
