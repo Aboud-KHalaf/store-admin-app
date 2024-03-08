@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopsmart_admin_ar/screens/edit_upload_product_form.dart';
 import 'package:shopsmart_admin_ar/screens/search_screen.dart';
 import 'package:shopsmart_admin_ar/services/assets_manager.dart';
 
@@ -15,7 +16,10 @@ class DashboardButtonModel {
         DashboardButtonModel(
           text: 'Add a new product',
           image: AssetsManager.cloud,
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context)
+                .pushNamed(EditOrUploadProductScreen.routeName);
+          },
         ),
         DashboardButtonModel(
           text: 'Inspect all product',

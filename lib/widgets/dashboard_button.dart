@@ -24,24 +24,23 @@ class DashboardButtonWidget extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.orangeAccent,
-            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                image,
-                height: size.width * 0.30,
-                width: size.width * 0.30,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SubtitleTextWidget(label: text)
-            ],
+          child: Card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  image,
+                  height: size.width * 0.30,
+                  width: size.width * 0.30,
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                SubtitleTextWidget(label: text)
+              ],
+            ),
           ),
         ),
       ),
