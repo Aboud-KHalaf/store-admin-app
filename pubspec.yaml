@@ -26,6 +26,7 @@ dependencies:
   # Utils
   uuid: ^3.0.7
   dotted_border: ^2.1.0
+  firebase_core: ^2.24.2
 
 dev_dependencies:
   flutter_test:
