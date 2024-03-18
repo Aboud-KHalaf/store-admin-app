@@ -23,9 +23,10 @@ class DashboardButtonWidget extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Card(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.grey.withOpacity(0.3)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +39,7 @@ class DashboardButtonWidget extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                SubtitleTextWidget(label: text)
+                Text(text),
               ],
             ),
           ),

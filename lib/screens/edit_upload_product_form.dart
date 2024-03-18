@@ -1,13 +1,17 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_admin_ar/consts/app_constants.dart';
 import 'package:shopsmart_admin_ar/models/product_model.dart';
-import 'package:shopsmart_admin_ar/services/my_app_method.dart';
+import 'package:shopsmart_admin_ar/helper/my_app_method.dart';
+import 'package:shopsmart_admin_ar/providers/product_provider.dart';
 import 'package:shopsmart_admin_ar/widgets/subtitle_text.dart';
+import 'package:uuid/uuid.dart';
 
 import '../consts/my_validators.dart';
 import '../widgets/title_text.dart';
@@ -30,6 +34,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   XFile? _pickedImage;
   bool isEditing = false;
   String? productNetworkImage;
+  String? imageUrl;
+  bool isLoading = false;
 
   late TextEditingController _titleController,
       _priceController,
@@ -100,7 +106,31 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
     }
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    if (isValid) {}
+    if (isValid) {
+      setState(() {
+        isLoading = true;
+      });
+      imageUrl = await Provider.of<ProductProvider>(context, listen: false)
+          .uploadImage(
+        imageFilePath: _pickedImage!.path,
+        imageId: _titleController.text,
+      );
+      if (mounted) {
+        await Provider.of<ProductProvider>(context, listen: false)
+            .addProduct(ProductModel(
+          productId: const Uuid().v4(),
+          productTitle: _titleController.text,
+          productPrice: _priceController.text,
+          productCategory: _categoryValue!,
+          productDescription: _descriptionController.text,
+          productImage: imageUrl!,
+          productQuantity: _quantityController.text,
+        ));
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> _editProduct() async {
@@ -114,7 +144,34 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       );
       return;
     }
-    if (isValid) {}
+    if (isValid) {
+      setState(() {
+        isLoading = true;
+      });
+      if (_pickedImage != null) {
+        imageUrl = await Provider.of<ProductProvider>(context, listen: false)
+            .uploadImage(
+          imageFilePath: _pickedImage!.path,
+          imageId: _titleController.text,
+        );
+      }
+
+      if (mounted) {
+        await Provider.of<ProductProvider>(context, listen: false)
+            .updateProduct(ProductModel(
+          productId: widget.productModel!.productId,
+          productTitle: _titleController.text,
+          productPrice: _priceController.text,
+          productCategory: _categoryValue!,
+          productDescription: _descriptionController.text,
+          productImage: imageUrl ?? productNetworkImage!,
+          productQuantity: _quantityController.text,
+        ));
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> localImagePicker() async {
@@ -123,11 +180,15 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       context: context,
       cameraFCT: () async {
         _pickedImage = await picker.pickImage(source: ImageSource.camera);
-        setState(() {});
+        setState(() {
+          productNetworkImage = null;
+        });
       },
       galleryFCT: () async {
         _pickedImage = await picker.pickImage(source: ImageSource.gallery);
-        setState(() {});
+        setState(() {
+          productNetworkImage = null;
+        });
       },
       removeFCT: () {
         setState(() {
@@ -169,7 +230,9 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                       fontSize: 20,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    clearForm();
+                  },
                 ),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
@@ -182,12 +245,14 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                     ),
                   ),
                   icon: const Icon(Icons.upload),
-                  label: Text(
-                    isEditing ? "Edit Product" : "Upload Product",
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
+                  label: isLoading
+                      ? const CircularProgressIndicator()
+                      : Text(
+                          isEditing ? "Edit Product" : "Upload Product",
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
                   onPressed: () {
                     if (isEditing) {
                       _editProduct();
@@ -262,7 +327,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                     ),
                   ),
                 ],
-                if (_pickedImage != null && productNetworkImage != null) ...[
+                if (_pickedImage != null || productNetworkImage != null) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

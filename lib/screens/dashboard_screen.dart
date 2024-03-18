@@ -5,7 +5,7 @@ import 'package:shopsmart_admin_ar/widgets/dashboard_button.dart';
 import 'package:shopsmart_admin_ar/widgets/title_text.dart';
 
 import '../providers/theme_provider.dart';
-import '../services/assets_manager.dart';
+import '../helper/assets_manager.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const routeName = '/DashboardScreen';

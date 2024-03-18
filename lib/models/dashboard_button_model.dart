@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopsmart_admin_ar/screens/edit_upload_product_form.dart';
 import 'package:shopsmart_admin_ar/screens/search_screen.dart';
-import 'package:shopsmart_admin_ar/services/assets_manager.dart';
+import 'package:shopsmart_admin_ar/helper/assets_manager.dart';
 
 class DashboardButtonModel {
   final String text;
