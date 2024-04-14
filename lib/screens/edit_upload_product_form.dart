@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_admin_ar/consts/app_constants.dart';
@@ -32,6 +32,7 @@ class EditOrUploadProductScreen extends StatefulWidget {
 class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   final _formKey = GlobalKey<FormState>();
   XFile? _pickedImage;
+  CroppedFile? croppedImage;
   bool isEditing = false;
   String? productNetworkImage;
   String? imageUrl;
@@ -180,12 +181,14 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       context: context,
       cameraFCT: () async {
         _pickedImage = await picker.pickImage(source: ImageSource.camera);
+        croppedImage = await MyAppMethods.crop(file: _pickedImage!);
         setState(() {
           productNetworkImage = null;
         });
       },
       galleryFCT: () async {
         _pickedImage = await picker.pickImage(source: ImageSource.gallery);
+        croppedImage = await MyAppMethods.crop(file: _pickedImage!);
         setState(() {
           productNetworkImage = null;
         });
@@ -319,7 +322,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                     borderRadius: BorderRadius.circular(12),
                     child: Image.file(
                       File(
-                        _pickedImage!.path,
+                        croppedImage!.path,
                       ),
                       // width: size.width * 0.7,
                       height: size.width * 0.5,

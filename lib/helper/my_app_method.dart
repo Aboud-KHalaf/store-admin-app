@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import '../widgets/subtitle_text.dart';
 import '../widgets/title_text.dart';
 import 'assets_manager.dart';
@@ -122,5 +124,17 @@ class MyAppMethods {
             )),
           );
         });
+  }
+
+  static Future<CroppedFile?> crop(
+      {required XFile file, CropStyle cropStyle = CropStyle.rectangle}) async {
+    return await ImageCropper().cropImage(
+      sourcePath: file.path,
+      cropStyle: cropStyle,
+      uiSettings: [
+        IOSUiSettings(),
+        AndroidUiSettings(),
+      ],
+    );
   }
 }
