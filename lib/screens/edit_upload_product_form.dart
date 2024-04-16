@@ -32,7 +32,7 @@ class EditOrUploadProductScreen extends StatefulWidget {
 class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   final _formKey = GlobalKey<FormState>();
   XFile? _pickedImage;
-  CroppedFile? croppedImage;
+  CroppedFile? _croppedImage;
   bool isEditing = false;
   String? productNetworkImage;
   String? imageUrl;
@@ -113,7 +113,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       });
       imageUrl = await Provider.of<ProductProvider>(context, listen: false)
           .uploadImage(
-        imageFilePath: _pickedImage!.path,
+        imageFilePath: _croppedImage!.path,
         imageId: _titleController.text,
       );
       if (mounted) {
@@ -152,7 +152,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       if (_pickedImage != null) {
         imageUrl = await Provider.of<ProductProvider>(context, listen: false)
             .uploadImage(
-          imageFilePath: _pickedImage!.path,
+          imageFilePath: _croppedImage!.path,
           imageId: _titleController.text,
         );
       }
@@ -181,14 +181,14 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
       context: context,
       cameraFCT: () async {
         _pickedImage = await picker.pickImage(source: ImageSource.camera);
-        croppedImage = await MyAppMethods.crop(file: _pickedImage!);
+        _croppedImage = await MyAppMethods.crop(file: _pickedImage!);
         setState(() {
           productNetworkImage = null;
         });
       },
       galleryFCT: () async {
         _pickedImage = await picker.pickImage(source: ImageSource.gallery);
-        croppedImage = await MyAppMethods.crop(file: _pickedImage!);
+        _croppedImage = await MyAppMethods.crop(file: _pickedImage!);
         setState(() {
           productNetworkImage = null;
         });
@@ -322,7 +322,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                     borderRadius: BorderRadius.circular(12),
                     child: Image.file(
                       File(
-                        croppedImage!.path,
+                        _croppedImage!.path,
                       ),
                       // width: size.width * 0.7,
                       height: size.width * 0.5,
